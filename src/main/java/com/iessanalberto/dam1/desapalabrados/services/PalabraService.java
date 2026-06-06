@@ -1,6 +1,8 @@
 package com.iessanalberto.dam1.desapalabrados.services;
 import com.iessanalberto.dam1.desapalabrados.models.Jugador;
 import com.iessanalberto.dam1.desapalabrados.models.Partida;
+import com.iessanalberto.dam1.desapalabrados.repository.IPalabraRepository;
+import com.iessanalberto.dam1.desapalabrados.repository.IRankingRepository;
 import com.iessanalberto.dam1.desapalabrados.repository.PalabraRepository;
 
 import java.util.Collections;
@@ -9,12 +11,14 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public class PalabraService {
-    private final PalabraRepository palabraRepository;
+    private final IPalabraRepository palabraRepository;
+    private final IRankingRepository rankingRepository;
     private Partida partidaActual;
 
     // Inyección de dependencias por constructor (Esto es para mokito, hacer caso omiso)
-    public PalabraService(PalabraRepository palabraRepository) {
+    public PalabraService(IPalabraRepository palabraRepository, IRankingRepository rankingRepository) {
         this.palabraRepository = palabraRepository;
+        this.rankingRepository = rankingRepository;
         inicializarNuevaPartida("Jugador test");
     }
 
@@ -35,7 +39,7 @@ public class PalabraService {
 
     public void inicializarNuevaPartida(String nombreJugador) {
         Jugador jugador = new Jugador(nombreJugador, 0);
-        List<String> palabras = palabraRepository.getPalabras();
+        List<String> palabras = palabraRepository.obtenerTodasLasPalabras();
 
         // Seleccionamos una palabra al azar
         String palabraSecreta = palabras.get(new Random().nextInt(palabras.size()));
@@ -65,8 +69,20 @@ public class PalabraService {
         }
     }
 
+    public List<String> obtenerRanking() {
+        return rankingRepository.obtenerTopPuntuaciones();
+    }
+
+    public void registrarPuntuacionActual() {
+        if (partidaActual != null) {
+            String nombre = partidaActual.getJugador().getNickname();
+            int puntos = partidaActual.getJugador().getPuntuacion();
+            rankingRepository.guardarPuntuacion(nombre, puntos);
+        }
+    }
+
     public void jugarDenuevo() {
-        List<String> palabras = palabraRepository.getPalabras();
+        List<String> palabras = palabraRepository.obtenerTodasLasPalabras();
         String nuevaPalabra = palabras.get(new Random().nextInt(palabras.size()));
 
         partidaActual.setIntentos(3);

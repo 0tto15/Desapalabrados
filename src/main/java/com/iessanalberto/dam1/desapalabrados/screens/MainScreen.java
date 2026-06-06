@@ -5,6 +5,8 @@ import com.iessanalberto.dam1.desapalabrados.services.PalabraService;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
+import java.util.List;
+
 /**
  * Author: Daniel C.A
  * Dathe: 31/05/26
@@ -24,6 +26,7 @@ public class MainScreen {
     private Label lblMensaje = new Label("Número de intentos: ");
     private TextField txtIntentos = new TextField();
     private Button btnVolverJugar = new Button("Jugar de nuevo");
+    private Button btnRanking = new Button("Ver ranking");
 
     private PalabraService palabraService;
 
@@ -46,6 +49,7 @@ public class MainScreen {
         root.add(lblMensaje, 0, 3);
         root.add(btnComprobar, 0, 5);
         root.add(btnVolverJugar, 1, 5);
+        root.add(btnRanking,0,7);
 
         // Protección contra modificaciones
         txtPalabraSecreta.setEditable(false);
@@ -70,6 +74,18 @@ public class MainScreen {
             btnVolverJugar.setDisable(true);
             btnComprobar.setDisable(false);
             txtPalabra.clear(); // Limpiamos el texto escrito por el usuario
+        });
+
+        btnRanking.setOnAction(e -> {
+            List<String> top5 = palabraService.obtenerRanking();
+
+            String textoRanking = String.join("\n", top5);
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Clasificación");
+            alert.setHeaderText("Los 5 mejores jugadores");
+            alert.setContentText(textoRanking);
+            alert.showAndWait();
         });
     }
 

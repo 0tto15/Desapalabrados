@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class PalabraRepository {
+public class PalabraRepository implements IPalabraRepository {
     // Final para que no sea reasignable
     private final List<String> palabras = new ArrayList<>(Arrays.asList(
             "perro","caballo","gato"
     ));
-
-    public List<String> getPalabras() {
+    @Override
+    public List<String> obtenerTodasLasPalabras() {
         return new ArrayList<>(palabras);
         // Devuele una copia de la lista de palabras
     }
