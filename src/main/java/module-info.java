@@ -7,4 +7,6 @@ module com.iessanalberto.dam1.desapalabrados {
 
     opens com.iessanalberto.dam1.desapalabrados to javafx.fxml;
     exports com.iessanalberto.dam1.desapalabrados;
+    // Permitir a Mockito crear simulacros de interfaces
+    opens com.iessanalberto.dam1.desapalabrados.repository to org.mockito;
 }
