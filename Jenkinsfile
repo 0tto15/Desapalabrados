@@ -8,37 +8,36 @@ pipeline {
 
     stages {
         stage('Limpieza y Preparación') {
+        // Borra ejecuciones previas para evitar conflictos
             steps {
                 echo 'Limpiando el espacio de trabajo...'
-                // Borra ejecuciones previas para evitar conflictos
                 sh 'mvn clean'
             }
         }
-
         stage('Compilación') {
+        // Compila el código fuente y las clases de prueba sin ejecutarlas aún
             steps {
-                echo 'Compilando el proyecto Desapalabrados...'
-                // Compila el código fuente y las clases de prueba sin ejecutarlas aún
+                echo 'Compilando el proyecto...'
                 sh 'mvn compile test-compile'
             }
         }
-
         stage('Ejecución de Tests') {
             steps {
-                echo 'Lanzando las pruebas unitarias con JUnit y Mockito...'
+                echo 'Ejecutando tests unitarios...'
                 // Ejecuta los tests
                 sh 'mvn test'
             }
         }
+    }
 
     post {
         always {
             echo 'Archivando los resultados de los tests...'
+            junit 'target/surefire-reports/*.xml'
             // gráficas de cuántos tests han pasado y cuántos han fallado
-            junit '**/target/surefire-reports/*.xml'
         }
         success {
-            echo 'La pipeline ha terminado.'
+            echo '¡La pipeline se ejecutó correctamente!'
         }
         failure {
             echo 'La pipeline ha fallado. Revisa los logs para ver qué test o compilación se rompió.'
