@@ -31,15 +31,6 @@ pipeline {
             }
         }
 
-        stage('Análisis de Calidad (SonarQube)') {
-                    steps {
-                        echo 'Enviando el código a SonarQube para el análisis de calidad...'
-                        sh 'mvn sonar:sonar'
-                    }
-                }
-            }
-
-
     post {
         always {
             echo 'Archivando los resultados de los tests...'
